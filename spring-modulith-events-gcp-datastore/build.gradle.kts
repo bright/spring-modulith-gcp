@@ -19,7 +19,7 @@ tasks.jar {
         attributes(
             "Implementation-Title" to "Spring Modulith Events GCP Datastore",
             "Implementation-Version" to project.version,
-            "Automatic-Module-Name" to "spring.modulith.events.datastore"
+            "Automatic-Module-Name" to "pl.brightinventions.spring.modulith.events.datastore"
         )
     }
 }

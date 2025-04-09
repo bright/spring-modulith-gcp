@@ -15,7 +15,7 @@ tasks.jar {
         attributes(
             "Implementation-Title" to "Spring Modulith Starter GCP Datastore",
             "Implementation-Version" to project.version,
-            "Automatic-Module-Name" to "spring.modulith.starter.datastore"
+            "Automatic-Module-Name" to "pl.brightinventions.spring.modulith.starter.datastore"
         )
     }
 }
