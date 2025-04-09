@@ -1,4 +1,4 @@
-package org.springframework.modulith.events.datastore
+package pl.brightinventions.spring.modulith.events.datastore
 
 import com.google.cloud.datastore.NullValue
 import com.google.cloud.datastore.Query

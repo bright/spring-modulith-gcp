@@ -1,4 +1,4 @@
-package org.springframework.modulith.events.datastore
+package pl.brightinventions.spring.modulith.events.datastore
 
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
 import org.assertj.core.api.Assertions.assertThat
@@ -50,7 +50,7 @@ class DatastoreEventPublicationAutoConfigurationTests {
         fun `should register schema initializer when enabled`() {
             // given & when
             contextRunner
-                .withPropertyValues("spring.modulith.events.datastore.schema-initialization.enabled=true")
+                .withPropertyValues("pl.brightinventions.spring.modulith.events.datastore.schema-initialization.enabled=true")
                 .run { context ->
                     // then
                     assertThat(context).hasSingleBean(DatastoreSchemaInitializer::class.java)
@@ -61,7 +61,7 @@ class DatastoreEventPublicationAutoConfigurationTests {
         fun `should not register schema initializer when explicitly disabled`() {
             // given & when
             contextRunner
-                .withPropertyValues("spring.modulith.events.datastore.schema-initialization.enabled=false")
+                .withPropertyValues("pl.brightinventions.spring.modulith.events.datastore.schema-initialization.enabled=false")
                 .run { context ->
                     // then
                     assertThat(context).doesNotHaveBean(DatastoreSchemaInitializer::class.java)

@@ -1,4 +1,4 @@
-package org.springframework.modulith.events.datastore
+package pl.brightinventions.spring.modulith.events.datastore
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 
@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  *
  * @author Piotr Mionskowski
  */
-@ConfigurationProperties("spring.modulith.events.datastore")
+@ConfigurationProperties("pl.brightinventions.spring.modulith.events.datastore")
 class DatastoreConfigurationProperties {
     /**
      * Whether to enable schema initialization.

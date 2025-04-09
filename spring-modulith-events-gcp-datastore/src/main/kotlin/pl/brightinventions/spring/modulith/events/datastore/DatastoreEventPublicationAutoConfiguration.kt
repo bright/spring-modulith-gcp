@@ -1,4 +1,4 @@
-package org.springframework.modulith.events.datastore
+package pl.brightinventions.spring.modulith.events.datastore
 
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
 import com.google.cloud.spring.data.datastore.core.DatastoreTemplate
@@ -41,7 +41,7 @@ class DatastoreEventPublicationAutoConfiguration : EventPublicationConfiguration
     }
 
     @Bean
-    @ConditionalOnProperty(name = ["spring.modulith.events.datastore.schema-initialization.enabled"], havingValue = "true")
+    @ConditionalOnProperty(name = ["pl.brightinventions.spring.modulith.events.datastore.schema-initialization.enabled"], havingValue = "true")
     fun datastoreSchemaInitializer(
         operations: DatastoreOperations,
         resourceLoader: ResourceLoader

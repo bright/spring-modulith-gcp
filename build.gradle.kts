@@ -7,7 +7,7 @@ plugins {
 }
 
 allprojects {
-    group = "org.springframework.modulith"
+    group = "pl.brightinventions.spring.modulith"
     version = "1.4.0-SNAPSHOT"
 
     repositories {
