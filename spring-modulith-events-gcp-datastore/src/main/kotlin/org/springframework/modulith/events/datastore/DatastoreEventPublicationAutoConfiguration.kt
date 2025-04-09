@@ -21,7 +21,7 @@ import org.springframework.modulith.events.support.CompletionMode
 /**
  * Auto-configuration for GCP Datastore based event publication.
  *
- * @author Your Name
+ * @author Piotr Mionskowski
  */
 @AutoConfiguration
 @AutoConfigureBefore(EventPublicationAutoConfiguration::class)

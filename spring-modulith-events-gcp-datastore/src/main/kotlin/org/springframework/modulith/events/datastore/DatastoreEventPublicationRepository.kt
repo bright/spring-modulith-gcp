@@ -19,7 +19,7 @@ import java.util.function.Supplier
 /**
  * GCP Datastore implementation of [EventPublicationRepository].
  *
- * @author Your Name
+ * @author Piotr Mionskowski
  */
 @Transactional
 class DatastoreEventPublicationRepository(
@@ -38,7 +38,7 @@ class DatastoreEventPublicationRepository(
     override fun create(publication: TargetEventPublication): TargetEventPublication {
         val event = publication.getEvent()
         val serializedEvent = serializer.serialize(event)
-        val entity = DatastoreEventPublication.of(
+        val entity = DatastoreEventPublication(
             publication.getIdentifier(),
             publication.getPublicationDate(),
             publication.getTargetIdentifier().toString(),

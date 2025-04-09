@@ -17,7 +17,7 @@ import java.util.Optional
 /**
  * Tests for [DatastoreEventPublicationAutoConfiguration].
  *
- * @author Your Name
+ * @author Piotr Mionskowski
  */
 class DatastoreEventPublicationAutoConfigurationTests {
 

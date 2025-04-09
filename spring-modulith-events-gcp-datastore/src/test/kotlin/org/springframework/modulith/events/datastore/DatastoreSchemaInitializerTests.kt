@@ -26,7 +26,7 @@ import java.nio.file.StandardCopyOption
  * although for simplicity we're still using mocks for the actual Datastore operations.
  * In a real-world scenario, you would connect to the Datastore emulator running in the container.
  *
- * @author Your Name
+ * @author Piotr Mionskowski
  */
 @Testcontainers
 class DatastoreSchemaInitializerTests {

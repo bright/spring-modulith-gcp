@@ -15,7 +15,7 @@ import java.io.IOException
  * 1. The EventPublication entity is registered with Datastore
  * 2. Any necessary index configuration is available
  *
- * @author Your Name
+ * @author Piotr Mionskowski
  */
 class DatastoreSchemaInitializer(
     private val operations: DatastoreOperations,
