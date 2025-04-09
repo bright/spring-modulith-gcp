@@ -6,7 +6,6 @@ import com.google.cloud.datastore.StructuredQuery.CompositeFilter
 import com.google.cloud.datastore.StructuredQuery.OrderBy
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
-import com.google.cloud.spring.data.datastore.core.DatastoreTemplate
 import org.springframework.beans.factory.BeanClassLoaderAware
 import org.springframework.modulith.events.core.EventPublicationRepository
 import org.springframework.modulith.events.core.EventSerializer
@@ -17,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.Assert
 import org.springframework.util.ClassUtils
 import java.time.Instant
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 import java.util.function.Supplier
 
 /**
