@@ -1,0 +1,28 @@
+# Datastore indexes for Spring Modulith Events
+#
+# This file defines the indexes needed for efficient querying of event publications.
+# For more information on Datastore indexes, see:
+# https://cloud.google.com/appengine/docs/standard/java/datastore/indexes
+
+indexes:
+  # Index for finding incomplete publications
+  - kind: EVENT_PUBLICATION
+    properties:
+      - name: COMPLETION_DATE
+        direction: asc
+      - name: PUBLICATION_DATE
+        direction: asc
+
+  # Index for finding publications by listener ID
+  - kind: EVENT_PUBLICATION
+    properties:
+      - name: LISTENER_ID
+        direction: asc
+      - name: PUBLICATION_DATE
+        direction: asc
+
+  # Index for finding completed publications
+  - kind: EVENT_PUBLICATION
+    properties:
+      - name: COMPLETION_DATE
+        direction: desc
