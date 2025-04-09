@@ -8,21 +8,21 @@ indexes:
   # Index for finding incomplete publications
   - kind: EVENT_PUBLICATION
     properties:
-      - name: COMPLETION_DATE
+      - name: completionDate
         direction: asc
-      - name: PUBLICATION_DATE
+      - name: publicationDate
         direction: asc
 
   # Index for finding publications by listener ID
   - kind: EVENT_PUBLICATION
     properties:
-      - name: LISTENER_ID
+      - name: listenerId
         direction: asc
-      - name: PUBLICATION_DATE
+      - name: publicationDate
         direction: asc
 
   # Index for finding completed publications
   - kind: EVENT_PUBLICATION
     properties:
-      - name: COMPLETION_DATE
+      - name: completionDate
         direction: desc

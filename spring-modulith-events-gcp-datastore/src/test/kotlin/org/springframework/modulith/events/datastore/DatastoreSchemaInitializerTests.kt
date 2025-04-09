@@ -60,8 +60,8 @@ class DatastoreSchemaInitializerTests {
                 indexes:
                 - kind: EVENT_PUBLICATION
                   properties:
-                  - name: LISTENER_ID
-                  - name: COMPLETION_DATE
+                  - name: listenerId
+                  - name: completionDate
             """.trimIndent()
 
             Files.write(indexFile.toPath(), indexContent.toByteArray())

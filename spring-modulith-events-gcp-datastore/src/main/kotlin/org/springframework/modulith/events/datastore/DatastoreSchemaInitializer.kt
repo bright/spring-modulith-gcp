@@ -80,6 +80,7 @@ class DatastoreSchemaInitializer(
                 logger.warn("For production use, consider creating a spring-modulith-events-gcp-datastore-indexes.yaml file with appropriate indexes")
                 logger.warn("See https://cloud.google.com/appengine/docs/standard/java/datastore/indexes for more information")
             }
+
         } catch (e: IOException) {
             logger.warn("Failed to check for Datastore index configuration: ${e.message}")
         }

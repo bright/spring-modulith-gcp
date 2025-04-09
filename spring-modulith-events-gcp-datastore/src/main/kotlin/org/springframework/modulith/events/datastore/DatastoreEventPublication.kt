@@ -16,12 +16,12 @@ import java.util.*
  */
 @Entity(name = "EVENT_PUBLICATION")
 class DatastoreEventPublication private constructor(
-    @Field(name = "ID") val id: UUID,
-    @Field(name = "PUBLICATION_DATE") val publicationDate: Instant,
-    @Field(name = "LISTENER_ID") val listenerId: String,
-    @Field(name = "SERIALIZED_EVENT") val serializedEvent: String,
-    @Field(name = "EVENT_TYPE") val eventType: String,
-    @Field(name = "COMPLETION_DATE") var completionDate: Instant? = null
+    @Field(name = "id") val id: UUID,
+    @Field(name = "publicationDate") val publicationDate: Instant,
+    @Field(name = "listenerId") val listenerId: String,
+    @Field(name = "serializedEvent") val serializedEvent: String,
+    @Field(name = "eventType") val eventType: String,
+    @Field(name = "completionDate") var completionDate: Instant? = null
 ) {
 
     companion object {
