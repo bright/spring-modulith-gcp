@@ -58,7 +58,7 @@ class DatastoreSchemaInitializerTests {
             // Create index file
             val indexContent = """
                 indexes:
-                - kind: EVENT_PUBLICATION
+                - kind: EventPublication
                   properties:
                   - name: listenerId
                   - name: completionDate

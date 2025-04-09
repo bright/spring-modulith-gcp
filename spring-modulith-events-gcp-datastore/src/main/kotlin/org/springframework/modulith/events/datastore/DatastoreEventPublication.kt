@@ -14,7 +14,7 @@ import java.util.*
  *
  * @author Your Name
  */
-@Entity(name = "EVENT_PUBLICATION")
+@Entity(name = "EventPublication")
 class DatastoreEventPublication private constructor(
     @Field(name = "id") val id: UUID,
     @Field(name = "publicationDate") val publicationDate: Instant,
