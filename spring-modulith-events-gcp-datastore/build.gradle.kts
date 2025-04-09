@@ -9,9 +9,9 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test)
 
     // TestContainers dependencies
-    testImplementation("org.testcontainers:testcontainers:1.19.7")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.7")
-    testImplementation("org.testcontainers:gcloud:1.19.7")
+    testImplementation(libs.testcontainers.core)
+    testImplementation(libs.testcontainers.junit.jupiter)
+    testImplementation(libs.testcontainers.gcloud)
 }
 
 tasks.jar {

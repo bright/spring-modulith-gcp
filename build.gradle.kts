@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.1.20" apply false
-    kotlin("plugin.spring") version "2.1.20" apply false
+    kotlin("jvm") version libs.versions.kotlin.get() apply false
+    kotlin("plugin.spring") version libs.versions.kotlin.get() apply false
     id("java-library")
 }
 
