@@ -8,7 +8,6 @@ dependencies {
 
     testImplementation(libs.spring.boot.starter.test)
 
-    // TestContainers dependencies
     testImplementation(libs.testcontainers.core)
     testImplementation(libs.testcontainers.junit.jupiter)
     testImplementation(libs.testcontainers.gcloud)
