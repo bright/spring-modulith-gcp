@@ -59,15 +59,12 @@ class DatastoreEventPublicationRepository(
     override fun markCompleted(event: Any, identifier: PublicationTargetIdentifier, completionDate: Instant) {
         val serializedEvent = serializer.serialize(event).toString()
 
-        // Create a query with filters for serializedEvent, listenerId, and completionDate being null
         val serializedEventFilter = PropertyFilter.eq("serializedEvent", serializedEvent)
-        val listenerIdFilter = PropertyFilter.eq("listenerId", identifier.toString())
+        val listenerIdFilter = PropertyFilter.eq("listenerId", identifier.value)
         val completionDateFilter = PropertyFilter.isNull("completionDate")
 
-        // Combine filters with AND
         val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
 
-        // Execute query
         val publications = operations.query(
             Query.newEntityQueryBuilder()
                 .setKind("EventPublication")
@@ -101,8 +98,18 @@ class DatastoreEventPublicationRepository(
     }
 
     private fun markCompletedInternal(publication: DatastoreEventPublication, completionDate: Instant) {
-        publication.markCompleted(completionDate)
-        operations.save(publication)
+        when (completionMode) {
+            CompletionMode.DELETE, CompletionMode.ARCHIVE -> {
+                // For DELETE and ARCHIVE modes, we delete the publication
+                // (ARCHIVE is not applicable for Datastore as there's no archive table)
+                operations.delete(publication)
+            }
+            else -> {
+                // For UPDATE mode (default), update the publication with completion timestamp
+                publication.markCompleted(completionDate)
+                operations.save(publication)
+            }
+        }
     }
 
     override fun findIncompletePublicationsByEventAndTargetIdentifier(
@@ -111,15 +118,12 @@ class DatastoreEventPublicationRepository(
     ): Optional<TargetEventPublication> {
         val serializedEvent = serializer.serialize(event).toString()
 
-        // Create a query with filters for serializedEvent, listenerId, and completionDate being null
         val serializedEventFilter = PropertyFilter.eq("serializedEvent", serializedEvent)
-        val listenerIdFilter = PropertyFilter.eq("listenerId", targetIdentifier.toString())
+        val listenerIdFilter = PropertyFilter.eq("listenerId", targetIdentifier.value)
         val completionDateFilter = PropertyFilter.isNull("completionDate")
 
-        // Combine filters with AND
         val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
 
-        // Execute query with sorting by publicationDate
         val publications = operations.query(
             Query.newEntityQueryBuilder()
                 .setKind("EventPublication")
