@@ -1,8 +1,12 @@
 package org.springframework.modulith.events.datastore
 
+import com.google.cloud.datastore.NullValue
+import com.google.cloud.datastore.Query
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter
+import com.google.cloud.datastore.StructuredQuery.OrderBy
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
+import com.google.cloud.spring.data.datastore.core.DatastoreTemplate
 import org.springframework.beans.factory.BeanClassLoaderAware
 import org.springframework.modulith.events.core.EventPublicationRepository
 import org.springframework.modulith.events.core.EventSerializer
@@ -53,19 +57,27 @@ class DatastoreEventPublicationRepository(
 
     @Transactional
     override fun markCompleted(event: Any, identifier: PublicationTargetIdentifier, completionDate: Instant) {
-        val serializedEvent = serializer.serialize(event)
+        val serializedEvent = serializer.serialize(event).toString()
 
-        // In a real implementation, we would use a query to find the publication
-        // For simplicity, we'll just find all publications and filter in memory
-        val allPublications = operations.findAll(DatastoreEventPublication::class.java)
+        // Create a query with filters for serializedEvent, listenerId, and completionDate being null
+        val serializedEventFilter = PropertyFilter.eq("serializedEvent", serializedEvent)
+        val listenerIdFilter = PropertyFilter.eq("listenerId", identifier.toString())
+        val completionDateFilter = PropertyFilter.isNull("completionDate")
 
-        val publication = allPublications.find { 
-            it.serializedEvent == serializedEvent && 
-            it.listenerId == identifier.toString() && 
-            it.completionDate == null 
-        }
+        // Combine filters with AND
+        val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
 
-        if (publication != null) {
+        // Execute query
+        val publications = operations.query(
+            Query.newEntityQueryBuilder()
+                .setKind("EventPublication")
+                .setFilter(compositeFilter)
+                .build(),
+            DatastoreEventPublication::class.java
+        )
+
+        // Mark the first matching publication as completed
+        publications.firstOrNull()?.let { publication ->
             markCompletedInternal(publication, completionDate)
         }
     }
@@ -97,22 +109,32 @@ class DatastoreEventPublicationRepository(
         event: Any,
         targetIdentifier: PublicationTargetIdentifier
     ): Optional<TargetEventPublication> {
-        val serializedEvent = serializer.serialize(event)
+        val serializedEvent = serializer.serialize(event).toString()
 
-        // In a real implementation, we would use a query to find the publication
-        // For simplicity, we'll just find all publications and filter in memory
-        val allPublications = operations.findAll(DatastoreEventPublication::class.java)
+        // Create a query with filters for serializedEvent, listenerId, and completionDate being null
+        val serializedEventFilter = PropertyFilter.eq("serializedEvent", serializedEvent)
+        val listenerIdFilter = PropertyFilter.eq("listenerId", targetIdentifier.toString())
+        val completionDateFilter = PropertyFilter.isNull("completionDate")
 
-        val publications = allPublications.filter { 
-            it.serializedEvent == serializedEvent && 
-            it.listenerId == targetIdentifier.toString() && 
-            it.completionDate == null 
-        }.sortedBy { it.publicationDate }
+        // Combine filters with AND
+        val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
 
-        return if (publications.isEmpty()) {
+        // Execute query with sorting by publicationDate
+        val publications = operations.query(
+            Query.newEntityQueryBuilder()
+                .setKind("EventPublication")
+                .setFilter(compositeFilter)
+                .addOrderBy(OrderBy.asc("publicationDate"))
+                .build(),
+            DatastoreEventPublication::class.java
+        )
+
+        // Get the first publication or return empty if none found
+        val publication = publications.firstOrNull()
+
+        return if (publication == null) {
             Optional.empty()
         } else {
-            val publication = publications.first()
             try {
                 val eventType = loadClass(publication.id, publication.eventType)
                 Optional.of(createAdapter(publication, eventType))
@@ -123,14 +145,21 @@ class DatastoreEventPublicationRepository(
     }
 
     override fun findCompletedPublications(): List<TargetEventPublication> {
-        // In a real implementation, we would use a query to find the publications
-        // For simplicity, we'll just find all publications and filter in memory
-        val allPublications = operations.findAll(DatastoreEventPublication::class.java)
+        // Create a query with filter for completionDate not being null
+        // Using PropertyFilter.neq with NullValue.of() as suggested
+        val completionDateFilter = PropertyFilter.neq("completionDate", NullValue.of())
 
-        val publications = allPublications.filter { 
-            it.completionDate != null 
-        }.sortedBy { it.publicationDate }
+        // Execute query with sorting by publicationDate
+        val publications = operations.query(
+            Query.newEntityQueryBuilder()
+                .setKind("EventPublication")
+                .setFilter(completionDateFilter)
+                .addOrderBy(OrderBy.asc("publicationDate"))
+                .build(),
+            DatastoreEventPublication::class.java
+        )
 
+        // Convert publications to TargetEventPublication
         return publications.mapNotNull { publication ->
             try {
                 val eventType = loadClass(publication.id, publication.eventType)
@@ -138,18 +167,24 @@ class DatastoreEventPublicationRepository(
             } catch (e: Exception) {
                 null
             }
-        }
+        }.toList()
     }
 
     override fun findIncompletePublications(): List<TargetEventPublication> {
-        // In a real implementation, we would use a query to find the publications
-        // For simplicity, we'll just find all publications and filter in memory
-        val allPublications = operations.findAll(DatastoreEventPublication::class.java)
+        // Create a query with filter for completionDate being null
+        val completionDateFilter = PropertyFilter.isNull("completionDate")
 
-        val publications = allPublications.filter { 
-            it.completionDate == null 
-        }.sortedBy { it.publicationDate }
+        // Execute query with sorting by publicationDate
+        val publications = operations.query(
+            Query.newEntityQueryBuilder()
+                .setKind("EventPublication")
+                .setFilter(completionDateFilter)
+                .addOrderBy(OrderBy.asc("publicationDate"))
+                .build(),
+            DatastoreEventPublication::class.java
+        )
 
+        // Convert publications to TargetEventPublication
         return publications.mapNotNull { publication ->
             try {
                 val eventType = loadClass(publication.id, publication.eventType)
@@ -157,7 +192,7 @@ class DatastoreEventPublicationRepository(
             } catch (e: Exception) {
                 null
             }
-        }
+        }.toList()
     }
 
     override fun findIncompletePublicationsPublishedBefore(instant: Instant): List<TargetEventPublication> {
@@ -188,28 +223,38 @@ class DatastoreEventPublicationRepository(
 
     @Transactional
     override fun deleteCompletedPublications() {
-        // In a real implementation, we would use a query to find the publications
-        // For simplicity, we'll just find all publications and filter in memory
-        val allPublications = operations.findAll(DatastoreEventPublication::class.java)
+        // First, find all completed publications using the findCompletedPublications method
+        // which uses PropertyFilter.neq with NullValue.of() to filter for non-null values
+        val completedPublications = findCompletedPublications()
 
-        val publications = allPublications.filter { 
-            it.completionDate != null 
+        // Extract the identifiers of the completed publications
+        val identifiers = completedPublications.map { it.getIdentifier() }
+
+        // Delete the publications by their identifiers
+        if (identifiers.isNotEmpty()) {
+            deletePublications(identifiers)
         }
-
-        operations.deleteAll(publications)
     }
 
     @Transactional
     override fun deleteCompletedPublicationsBefore(instant: Instant) {
-        // In a real implementation, we would use a query to find the publications
-        // For simplicity, we'll just find all publications and filter in memory
-        val allPublications = operations.findAll(DatastoreEventPublication::class.java)
+        // First, find all completed publications using the findCompletedPublications method
+        // which uses PropertyFilter.neq with NullValue.of() to filter for non-null values
+        // We still need to filter for date comparisons in memory as Datastore doesn't support this directly
+        val completedPublications = findCompletedPublications()
 
-        val publications = allPublications.filter { 
-            it.completionDate != null && it.completionDate!!.isBefore(instant)
+        // Filter publications that were completed before the given instant
+        val publicationsToDelete = completedPublications.filter { 
+            it.getCompletionDate().isPresent && it.getCompletionDate().get().isBefore(instant)
         }
 
-        operations.deleteAll(publications)
+        // Extract the identifiers of the publications to delete
+        val identifiers = publicationsToDelete.map { it.getIdentifier() }
+
+        // Delete the publications by their identifiers
+        if (identifiers.isNotEmpty()) {
+            deletePublications(identifiers)
+        }
     }
 
     private fun loadClass(id: UUID, className: String): Class<*> {
