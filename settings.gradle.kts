@@ -2,6 +2,8 @@ rootProject.name = "spring-modulith-gcp"
 
 include("spring-modulith-events-gcp-datastore")
 include("spring-modulith-starter-gcp-datastore")
+include("spring-gcp-datastore")
+include("examples")
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -31,6 +33,7 @@ dependencyResolutionManagement {
             library("testcontainers-gcloud", "org.testcontainers", "gcloud").versionRef("testcontainers")
 
             // BOM imports
+            library("spring-boot-bom", "org.springframework.boot", "spring-boot-dependencies").versionRef("springBoot")
             library("spring-cloud-gcp-dependencies", "com.google.cloud", "spring-cloud-gcp-dependencies").versionRef("springCloudGcp")
         }
     }
