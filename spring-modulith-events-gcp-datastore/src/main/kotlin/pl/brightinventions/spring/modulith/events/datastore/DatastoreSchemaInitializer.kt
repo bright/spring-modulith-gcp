@@ -25,8 +25,8 @@ class DatastoreSchemaInitializer(
     private val logger = LoggerFactory.getLogger(DatastoreSchemaInitializer::class.java)
 
     companion object {
-        private const val MODULE_SPECIFIC_INDEX_CONFIG_LOCATION = "classpath:spring-modulith-events-gcp-datastore-indexes.yaml"
-        private const val DEFAULT_INDEX_CONFIG_LOCATION = "classpath:datastore-indexes.yaml"
+        private const val MODULE_SPECIFIC_INDEX_CONFIG_LOCATION =
+            "classpath:spring-modulith-events-gcp-datastore-indexes.yaml"
         private const val ENTITY_NAME = "EventPublication"
     }
 
@@ -65,7 +65,7 @@ class DatastoreSchemaInitializer(
      * Checks if the index configuration file exists.
      * In Datastore, indexes are defined in a datastore-indexes.yaml file that is
      * deployed with the application.
-     * 
+     *
      * This method first looks for a module-specific index file (spring-modulith-events-gcp-datastore-indexes.yaml)
      * to avoid classpath conflicts. If that file doesn't exist, it falls back to the default index file.
      */
@@ -77,16 +77,9 @@ class DatastoreSchemaInitializer(
             if (moduleSpecificResource.exists()) {
                 logger.info("Found Datastore index configuration at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION")
             } else {
-                // Fall back to the default index file
-                val defaultResource: Resource = resourceLoader.getResource(DEFAULT_INDEX_CONFIG_LOCATION)
-
-                if (defaultResource.exists()) {
-                    logger.info("Found Datastore index configuration at $DEFAULT_INDEX_CONFIG_LOCATION")
-                } else {
-                    logger.warn("No Datastore index configuration found at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION or $DEFAULT_INDEX_CONFIG_LOCATION")
-                    logger.warn("For production use, consider creating a spring-modulith-events-gcp-datastore-indexes.yaml file with appropriate indexes")
-                    logger.warn("See https://cloud.google.com/appengine/docs/standard/java/datastore/indexes for more information")
-                }
+                logger.warn("No Datastore index configuration found at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION")
+                logger.warn("For production use, consider creating a spring-modulith-events-gcp-datastore-indexes.yaml file with appropriate indexes")
+                logger.warn("See https://cloud.google.com/appengine/docs/standard/java/datastore/indexes for more information")
             }
 
         } catch (e: IOException) {

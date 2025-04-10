@@ -17,6 +17,7 @@ import org.springframework.modulith.events.config.EventPublicationAutoConfigurat
 import org.springframework.modulith.events.config.EventPublicationConfigurationExtension
 import org.springframework.modulith.events.core.EventSerializer
 import org.springframework.modulith.events.support.CompletionMode
+import org.springframework.transaction.PlatformTransactionManager
 
 /**
  * Auto-configuration for GCP Datastore based event publication.
@@ -35,9 +36,10 @@ class DatastoreEventPublicationAutoConfiguration : EventPublicationConfiguration
     fun datastoreEventPublicationRepository(
         operations: DatastoreOperations,
         serializer: EventSerializer,
-        environment: Environment
+        environment: Environment,
+        platformTransactionManager: PlatformTransactionManager,
     ): DatastoreEventPublicationRepository {
-        return DatastoreEventPublicationRepository(operations, serializer, CompletionMode.from(environment))
+        return DatastoreEventPublicationRepository(operations, serializer, CompletionMode.from(environment), platformTransactionManager)
     }
 
     @Bean
