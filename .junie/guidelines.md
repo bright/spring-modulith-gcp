@@ -54,7 +54,7 @@ Target JVM 21
 
 # Comments
 
-If you're generating Javadoc comments, then use Piotr Mionskowski as the author tag Java Docs.
+If you're generating Javadoc comments, then use Bright Inventions as the author tag Java Docs.
 
 Do not add comments in the method implementations when the code is self-documenting.
 Other than documentation only add comments for some special cases, workarounds, shortcuts, todos. 
