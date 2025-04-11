@@ -10,7 +10,7 @@ import java.util.UUID
  *
  * @author Piotr Mionskowski
  */
-@Entity
+@Entity(name = "AuditLog")
 data class AuditLog(
     @Id
     val id: String = UUID.randomUUID().toString(),
