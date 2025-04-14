@@ -7,7 +7,8 @@ plugins {
 dependencies {
     implementation(platform(libs.spring.boot.bom))
     implementation(libs.spring.boot.starter)
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.actuator)
     implementation(project(":spring-gcp-datastore"))
     implementation(project(":spring-modulith-starter-gcp-datastore"))
     implementation(libs.spring.cloud.gcp.starter.data.datastore)
