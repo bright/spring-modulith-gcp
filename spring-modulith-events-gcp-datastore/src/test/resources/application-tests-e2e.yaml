@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    gcp:
+      project-id: spring-modulith-gcp
+      datastore:
+        database-id: example-datastore

@@ -1,7 +1,10 @@
 package pl.brightinventions.spring.modulith.events.datastore
 
+import com.google.api.gax.core.CredentialsProvider
+import com.google.cloud.datastore.Datastore
+import com.google.cloud.datastore.admin.v1.DatastoreAdminClient
+import com.google.cloud.datastore.admin.v1.DatastoreAdminSettings
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
-import com.google.cloud.spring.data.datastore.core.DatastoreTemplate
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.autoconfigure.AutoConfigureBefore
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
@@ -10,7 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.core.io.ResourceLoader
 import org.springframework.modulith.events.config.EventPublicationAutoConfiguration
@@ -39,15 +41,32 @@ class DatastoreEventPublicationAutoConfiguration : EventPublicationConfiguration
         environment: Environment,
         platformTransactionManager: PlatformTransactionManager,
     ): DatastoreEventPublicationRepository {
-        return DatastoreEventPublicationRepository(operations, serializer, CompletionMode.from(environment), platformTransactionManager)
+        return DatastoreEventPublicationRepository(
+            operations, serializer, CompletionMode.from(environment), platformTransactionManager
+        )
     }
 
     @Bean
-    @ConditionalOnProperty(name = ["pl.brightinventions.spring.modulith.events.datastore.schema-initialization.enabled"], havingValue = "true")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(
+        name = ["pl.brightinventions.spring.modulith.events.datastore.schema-initialization.enabled"],
+        havingValue = "true"
+    )
+    fun datastoreAdminClient(datastore: Datastore, credentialsProvider: CredentialsProvider): DatastoreAdminClient {
+        return DatastoreAdminClient.create(
+            DatastoreAdminSettings.newBuilder()
+                .setCredentialsProvider(credentialsProvider).build()
+        )
+    }
+
+    @Bean
+    @ConditionalOnProperty(
+        name = ["pl.brightinventions.spring.modulith.events.datastore.schema-initialization.enabled"],
+        havingValue = "true"
+    )
     fun datastoreSchemaInitializer(
-        operations: DatastoreOperations,
-        resourceLoader: ResourceLoader
+        operations: DatastoreOperations, resourceLoader: ResourceLoader, datastoreAdminClient: DatastoreAdminClient
     ): DatastoreSchemaInitializer {
-        return DatastoreSchemaInitializer(operations, resourceLoader)
+        return DatastoreSchemaInitializer(operations, resourceLoader, datastoreAdminClient)
     }
 }
