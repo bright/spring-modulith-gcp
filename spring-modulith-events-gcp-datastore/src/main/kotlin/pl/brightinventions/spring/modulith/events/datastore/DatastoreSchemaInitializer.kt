@@ -1,6 +1,8 @@
 package pl.brightinventions.spring.modulith.events.datastore
 
+import com.google.cloud.datastore.admin.v1.DatastoreAdminClient
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
+import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.Resource
@@ -19,7 +21,8 @@ import java.io.IOException
  */
 class DatastoreSchemaInitializer(
     private val operations: DatastoreOperations,
-    private val resourceLoader: ResourceLoader
+    private val resourceLoader: ResourceLoader,
+    datastoreAdminClient: DatastoreAdminClient
 ) : InitializingBean {
 
     private val logger = LoggerFactory.getLogger(DatastoreSchemaInitializer::class.java)
@@ -36,10 +39,8 @@ class DatastoreSchemaInitializer(
     override fun afterPropertiesSet() {
         logger.info("Initializing Datastore schema for event publications")
 
-        // Verify the entity is registered with Datastore
         ensureEntityRegistered()
 
-        // Check for index configuration
         checkIndexConfiguration()
 
         logger.info("Datastore schema initialization complete")
@@ -52,12 +53,14 @@ class DatastoreSchemaInitializer(
     private fun ensureEntityRegistered() {
         try {
             // This will throw an exception if the entity is not registered
-            operations.count(DatastoreEventPublication::class.java)
+            operations.findAll(
+                DatastoreEventPublication::class.java,
+                DatastoreQueryOptions.Builder().setLimit(1).build()
+            )
             logger.debug("Entity $ENTITY_NAME is registered with Datastore")
         } catch (e: Exception) {
             logger.warn("Failed to verify entity $ENTITY_NAME registration: ${e.message}")
-            // We don't throw an exception here because the entity will be registered
-            // when it's first used, and this is just a verification step
+            throw e
         }
     }
 
@@ -76,6 +79,9 @@ class DatastoreSchemaInitializer(
 
             if (moduleSpecificResource.exists()) {
                 logger.info("Found Datastore index configuration at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION")
+
+
+
             } else {
                 logger.warn("No Datastore index configuration found at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION")
                 logger.warn("For production use, consider creating a spring-modulith-events-gcp-datastore-indexes.yaml file with appropriate indexes")
@@ -84,6 +90,7 @@ class DatastoreSchemaInitializer(
 
         } catch (e: IOException) {
             logger.warn("Failed to check for Datastore index configuration: ${e.message}")
+            throw e
         }
     }
 }

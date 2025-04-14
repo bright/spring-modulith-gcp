@@ -13,8 +13,11 @@ dependencyResolutionManagement {
             version("springCloudGcp", "6.1.1")
             version("springModulith", "1.4.0-SNAPSHOT")
             version("testcontainers", "1.19.7")
+            version("kotest", "6.0.0.M3")
 
             library("spring-boot-starter", "org.springframework.boot", "spring-boot-starter").versionRef("springBoot")
+            library("spring-boot-starter-web", "org.springframework.boot", "spring-boot-starter-web").versionRef("springBoot")
+            library("spring-boot-starter-actuator", "org.springframework.boot", "spring-boot-starter-actuator").versionRef("springBoot")
             library("spring-boot-starter-test", "org.springframework.boot", "spring-boot-starter-test").versionRef("springBoot")
 
             library("spring-modulith-events-api", "org.springframework.modulith", "spring-modulith-events-api").versionRef("springModulith")
@@ -23,6 +26,8 @@ dependencyResolutionManagement {
             library("spring-modulith-starter-core", "org.springframework.modulith", "spring-modulith-starter-core").versionRef("springModulith")
 
             library("spring-cloud-gcp-starter-data-datastore", "com.google.cloud", "spring-cloud-gcp-starter-data-datastore").versionRef("springCloudGcp")
+            library("spring-cloud-gcp-starter-data-firestore", "com.google.cloud", "spring-cloud-gcp-starter-data-firestore").versionRef("springCloudGcp")
+            library("google-cloud-firestore-admin", "com.google.cloud", "google-cloud-firestore-admin").version("3.30.11")
 
             library("kotlin-stdlib", "org.jetbrains.kotlin", "kotlin-stdlib").versionRef("kotlin")
             library("kotlin-reflect", "org.jetbrains.kotlin", "kotlin-reflect").versionRef("kotlin")
@@ -31,6 +36,9 @@ dependencyResolutionManagement {
             library("testcontainers-core", "org.testcontainers", "testcontainers").versionRef("testcontainers")
             library("testcontainers-junit-jupiter", "org.testcontainers", "junit-jupiter").versionRef("testcontainers")
             library("testcontainers-gcloud", "org.testcontainers", "gcloud").versionRef("testcontainers")
+
+            // Kotest
+            library("kotest-assertions-core", "io.kotest", "kotest-assertions-core").versionRef("kotest")
 
             // BOM imports
             library("spring-boot-bom", "org.springframework.boot", "spring-boot-dependencies").versionRef("springBoot")
