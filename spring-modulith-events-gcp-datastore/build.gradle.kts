@@ -7,6 +7,9 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
 
+    compileOnly(libs.google.cloud.firestore.admin)
+    testImplementation(libs.google.cloud.firestore.admin)
+
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.modulith.events.jackson)
 
@@ -15,8 +18,6 @@ dependencies {
     testImplementation(libs.testcontainers.gcloud)
 
     testImplementation(libs.kotest.assertions.core)
-    testImplementation(libs.spring.cloud.gcp.starter.data.firestore)
-    testImplementation(libs.google.cloud.firestore.admin)
 }
 
 tasks.jar {

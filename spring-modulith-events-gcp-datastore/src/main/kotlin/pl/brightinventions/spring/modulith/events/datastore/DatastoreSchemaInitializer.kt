@@ -1,13 +1,20 @@
 package pl.brightinventions.spring.modulith.events.datastore
 
-import com.google.cloud.datastore.admin.v1.DatastoreAdminClient
+import com.google.cloud.datastore.Datastore
+import com.google.cloud.firestore.v1.FirestoreAdminClient
 import com.google.cloud.spring.data.datastore.core.DatastoreOperations
 import com.google.cloud.spring.data.datastore.core.DatastoreQueryOptions
+import com.google.firestore.admin.v1.CollectionGroupName
+import com.google.firestore.admin.v1.CreateIndexRequest
+import com.google.firestore.admin.v1.Index
+import com.google.firestore.admin.v1.Index.IndexField
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
+import org.yaml.snakeyaml.Yaml
 import java.io.IOException
+import java.util.function.Supplier
 
 /**
  * Initializes the Datastore schema used to store events.
@@ -21,8 +28,9 @@ import java.io.IOException
  */
 class DatastoreSchemaInitializer(
     private val operations: DatastoreOperations,
+    private val datastore: Supplier<Datastore>,
     private val resourceLoader: ResourceLoader,
-    datastoreAdminClient: DatastoreAdminClient
+    private val firestoreAdminClient: FirestoreAdminClient
 ) : InitializingBean {
 
     private val logger = LoggerFactory.getLogger(DatastoreSchemaInitializer::class.java)
@@ -41,7 +49,7 @@ class DatastoreSchemaInitializer(
 
         ensureEntityRegistered()
 
-        checkIndexConfiguration()
+        applyIndexConfiguration()
 
         logger.info("Datastore schema initialization complete")
     }
@@ -54,8 +62,7 @@ class DatastoreSchemaInitializer(
         try {
             // This will throw an exception if the entity is not registered
             operations.findAll(
-                DatastoreEventPublication::class.java,
-                DatastoreQueryOptions.Builder().setLimit(1).build()
+                DatastoreEventPublication::class.java, DatastoreQueryOptions.Builder().setLimit(1).build()
             )
             logger.debug("Entity $ENTITY_NAME is registered with Datastore")
         } catch (e: Exception) {
@@ -64,24 +71,63 @@ class DatastoreSchemaInitializer(
         }
     }
 
-    /**
-     * Checks if the index configuration file exists.
-     * In Datastore, indexes are defined in a datastore-indexes.yaml file that is
-     * deployed with the application.
-     *
-     * This method first looks for a module-specific index file (spring-modulith-events-gcp-datastore-indexes.yaml)
-     * to avoid classpath conflicts. If that file doesn't exist, it falls back to the default index file.
-     */
-    private fun checkIndexConfiguration() {
+    private fun applyIndexConfiguration() {
         try {
-            // First try the module-specific index file
             val moduleSpecificResource: Resource = resourceLoader.getResource(MODULE_SPECIFIC_INDEX_CONFIG_LOCATION)
 
             if (moduleSpecificResource.exists()) {
                 logger.info("Found Datastore index configuration at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION")
 
+                // Parse the YAML file to get index information
+                val yaml = Yaml()
+                val indexConfig = yaml.load<Map<String, Any>>(moduleSpecificResource.inputStream)
 
+                @Suppress("UNCHECKED_CAST") val indexes =
+                    indexConfig["indexes"] as? List<Map<String, Any>> ?: emptyList()
 
+                if (indexes.isNotEmpty()) {
+                    logger.info("Found ${indexes.size} indexes in configuration file")
+
+                    // Log information about each index
+                    indexes.forEachIndexed { _, inexProps ->
+                        val kind = inexProps["kind"] as? String ?: "Unknown"
+
+                        @Suppress("UNCHECKED_CAST") val properties =
+                            inexProps["properties"] as? List<Map<String, Any>> ?: emptyList()
+
+                        val indexProperties = properties.map { prop ->
+                            val name =
+                                prop["name"] as? String ?: throw IllegalArgumentException("Property 'name' is missing")
+                            val direction = prop["direction"] as? String ?: "asc"
+                            val indexDirection = if ("asc".equals(direction, ignoreCase = true)) {
+                                IndexField.Order.ASCENDING
+                            } else {
+                                IndexField.Order.DESCENDING
+                            }
+                            IndexField.newBuilder().setFieldPath(name).setOrder(indexDirection).build()
+                        }
+
+                        val datastoreOptions = datastore.get().options
+                        val result = firestoreAdminClient.createIndexAsync(
+                            CreateIndexRequest.newBuilder().setParent(
+                                CollectionGroupName.of(
+                                    datastoreOptions.projectId,
+                                    datastoreOptions.databaseId ?: "(default)",
+                                    kind
+                                ).toString()
+                            ).setIndex(
+                                Index.newBuilder().addAllFields(indexProperties)
+                                    .setApiScope(Index.ApiScope.DATASTORE_MODE_API)
+                                    .setQueryScope(Index.QueryScope.COLLECTION_GROUP)
+                                    .build()
+                            ).build()
+                        )
+
+                        logger.info("Requested index creation {}", result)
+                    }
+                } else {
+                    logger.warn("No indexes found in configuration file")
+                }
             } else {
                 logger.warn("No Datastore index configuration found at $MODULE_SPECIFIC_INDEX_CONFIG_LOCATION")
                 logger.warn("For production use, consider creating a spring-modulith-events-gcp-datastore-indexes.yaml file with appropriate indexes")
