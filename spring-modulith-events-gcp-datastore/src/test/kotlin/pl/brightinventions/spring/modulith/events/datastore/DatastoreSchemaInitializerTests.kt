@@ -3,7 +3,6 @@ package pl.brightinventions.spring.modulith.events.datastore
 import com.google.cloud.datastore.Datastore
 import com.google.cloud.firestore.v1.FirestoreAdminClient
 import com.google.cloud.spring.autoconfigure.datastore.GcpDatastoreProperties
-import com.google.datastore.admin.v1.ListIndexesRequest
 import com.google.firestore.admin.v1.CollectionGroupName
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
