@@ -7,7 +7,7 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 
 /**
- * Integration tests for [DatastoreSchemaInitializer].
+ * Integration tests for Datastore.
  *
  * This test uses TestContainers to demonstrate the integration testing approach,
  * although for simplicity we're still using mocks for the actual Datastore operations.

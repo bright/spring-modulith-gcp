@@ -7,7 +7,6 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
 
-    compileOnly(libs.google.cloud.firestore.admin)
     testImplementation(libs.google.cloud.firestore.admin)
 
     testImplementation(libs.spring.boot.starter.test)
