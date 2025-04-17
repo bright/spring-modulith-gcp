@@ -101,6 +101,7 @@ subprojects {
     }
 
     configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
+        gitRootSearch = true
         project {
             description.set("Spring Modulith GCP integration")
             authors.set(listOf("Bright Inventions"))
@@ -119,6 +120,7 @@ subprojects {
                 name.set("spring-modulith-gcp")
             }
         }
+
 
         checksum {
             individual = true  // Generate checksums for each file
