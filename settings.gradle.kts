@@ -11,7 +11,7 @@ dependencyResolutionManagement {
             version("springBoot", "3.4.4")
             version("kotlin", "2.1.20")
             version("springCloudGcp", "6.1.1")
-            version("springModulith", "1.4.0-SNAPSHOT")
+            version("springModulith", "1.3.4")
             version("testcontainers", "1.19.7")
             version("kotest", "6.0.0.M3")
 
