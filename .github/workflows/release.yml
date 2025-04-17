@@ -12,6 +12,9 @@ on:
         required: true
         default: '0.1.1-SNAPSHOT'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Release
