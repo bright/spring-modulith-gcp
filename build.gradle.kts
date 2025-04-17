@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jreleaser.model.Active
-import org.jreleaser.model.Signing
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get() apply false
@@ -84,65 +83,65 @@ subprojects {
                 }
             }
         }
-    }
 
-    configure<SigningExtension> {
-        sign(extensions.getByType<PublishingExtension>().publications)
-        val secretKey = providers.environmentVariable("JRELEASER_GPG_SECRET_KEY")
-            .map { it.trim() }
-            .orNull
-        val password = providers.environmentVariable("JRELEASER_GPG_PASSPHRASE")
-            .map { it.trim() }
-            .orNull
-        useInMemoryPgpKeys(
-            secretKey,
-            password,
-        )
-    }
+        configure<SigningExtension> {
+            sign(extensions.getByType<PublishingExtension>().publications)
+            val secretKey = providers.environmentVariable("JRELEASER_GPG_SECRET_KEY")
+                .map { it.trim() }
+                .orNull
+            val password = providers.environmentVariable("JRELEASER_GPG_PASSPHRASE")
+                .map { it.trim() }
+                .orNull
+            useInMemoryPgpKeys(
+                secretKey,
+                password,
+            )
+        }
 
-    configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
-        gitRootSearch = true
-        project {
-            description.set("Spring Modulith GCP integration")
-            authors.set(listOf("Bright Inventions"))
-            license.set("Apache-2.0")
-            links {
-                homepage.set("https://github.com/bright/spring-modulith-gcp")
+        configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
+            gitRootSearch = true
+            project {
+                description.set("Spring Modulith GCP integration")
+                authors.set(listOf("Bright Inventions"))
+                license.set("Apache-2.0")
+                links {
+                    homepage.set("https://github.com/bright/spring-modulith-gcp")
+                }
+                inceptionYear.set("2024")
+                vendor.set("Bright Inventions")
             }
-            inceptionYear.set("2024")
-            vendor.set("Bright Inventions")
-        }
 
 
-        release {
-            github {
-                repoOwner.set("bright")
-                name.set("spring-modulith-gcp")
+            release {
+                github {
+                    repoOwner.set("bright")
+                    name.set("spring-modulith-gcp")
+                }
             }
-        }
 
 
-        checksum {
-            individual = true  // Generate checksums for each file
-        }
+            checksum {
+                individual = true  // Generate checksums for each file
+            }
 
 
-        signing {
-            active = Active.ALWAYS
-            armored = true
-        }
+            signing {
+                active = Active.ALWAYS
+                armored = true
+            }
 
-        deploy {
-            maven {
-                mavenCentral {
-                    register("sonatype") { // https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_portal_publisher_api
-                        active = Active.ALWAYS
-                        url = "https://central.sonatype.com/api/v1/publisher"
-                        stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.path)
+            deploy {
+                maven {
+                    mavenCentral {
+                        register("sonatype") { // https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_portal_publisher_api
+                            active = Active.ALWAYS
+                            url = "https://central.sonatype.com/api/v1/publisher"
+                            stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.path)
+                        }
                     }
                 }
             }
-        }
 
+        }
     }
 }
