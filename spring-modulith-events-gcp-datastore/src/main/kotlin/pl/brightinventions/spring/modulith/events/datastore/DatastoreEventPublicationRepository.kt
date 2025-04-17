@@ -12,11 +12,7 @@ import org.springframework.modulith.events.core.EventSerializer
 import org.springframework.modulith.events.core.PublicationTargetIdentifier
 import org.springframework.modulith.events.core.TargetEventPublication
 import org.springframework.modulith.events.support.CompletionMode
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionDefinition
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.util.Assert
 import org.springframework.util.ClassUtils
 import java.time.Instant
@@ -29,20 +25,18 @@ import java.util.function.Supplier
  *
  * @author Piotr Mionskowski
  */
+@Transactional
 open class DatastoreEventPublicationRepository(
     private val operations: DatastoreOperations,
     private val serializer: EventSerializer,
     private val completionMode: CompletionMode,
-    transactionManager: PlatformTransactionManager
 ) : EventPublicationRepository, BeanClassLoaderAware {
-    private val transactionTemplate = TransactionTemplate(transactionManager, TransactionDefinition.withDefaults())
     private var classLoader: ClassLoader? = null
 
     override fun setBeanClassLoader(classLoader: ClassLoader) {
         this.classLoader = classLoader
     }
 
-    @Transactional
     override fun create(publication: TargetEventPublication): TargetEventPublication {
         val event = publication.getEvent()
         val serializedEvent = serializer.serialize(event)
@@ -60,37 +54,30 @@ open class DatastoreEventPublicationRepository(
     }
 
     override fun markCompleted(event: Any, identifier: PublicationTargetIdentifier, completionDate: Instant) {
-        transactionTemplate.execute {
-            val serializedEvent = serializer.serialize(event).toString()
+        val serializedEvent = serializer.serialize(event).toString()
 
-            val serializedEventFilter = PropertyFilter.eq("serializedEvent", serializedEvent)
-            val listenerIdFilter = PropertyFilter.eq("listenerId", identifier.value)
-            val completionDateFilter = PropertyFilter.isNull("completionDate")
+        val serializedEventFilter = PropertyFilter.eq("serializedEvent", serializedEvent)
+        val listenerIdFilter = PropertyFilter.eq("listenerId", identifier.value)
+        val completionDateFilter = PropertyFilter.isNull("completionDate")
 
-            val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
+        val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
 
-            val publications = operations.query(
-                Query.newEntityQueryBuilder()
-                    .setKind("EventPublication")
-                    .setFilter(compositeFilter)
-                    .build(),
-                DatastoreEventPublication::class.java
-            )
+        val publications = operations.query(
+            Query.newEntityQueryBuilder().setKind("EventPublication").setFilter(compositeFilter).build(),
+            DatastoreEventPublication::class.java
+        )
 
-            // Mark the first matching publication as completed
-            publications.firstOrNull()?.let { publication ->
-                markCompletedInternal(publication, completionDate)
-            }
+        // Mark the first matching publication as completed
+        publications.firstOrNull()?.let { publication ->
+            markCompletedInternal(publication, completionDate)
         }
     }
 
     override fun markCompleted(identifier: UUID, completionDate: Instant) {
-        transactionTemplate.execute {
-            val publication = operations.findById(identifier.toString(), DatastoreEventPublication::class.java)
+        val publication = operations.findById(identifier.toString(), DatastoreEventPublication::class.java)
 
-            if (publication != null) {
-                markCompletedInternal(publication, completionDate)
-            }
+        if (publication != null) {
+            markCompletedInternal(publication, completionDate)
         }
     }
 
@@ -101,6 +88,7 @@ open class DatastoreEventPublicationRepository(
                 // (ARCHIVE is not applicable for Datastore as there's no archive table)
                 operations.delete(publication)
             }
+
             else -> {
                 // For UPDATE mode (default), update the publication with completion timestamp
                 publication.markCompleted(completionDate)
@@ -110,8 +98,7 @@ open class DatastoreEventPublicationRepository(
     }
 
     override fun findIncompletePublicationsByEventAndTargetIdentifier(
-        event: Any,
-        targetIdentifier: PublicationTargetIdentifier
+        event: Any, targetIdentifier: PublicationTargetIdentifier
     ): Optional<TargetEventPublication> {
         val serializedEvent = serializer.serialize(event).toString()
 
@@ -122,12 +109,8 @@ open class DatastoreEventPublicationRepository(
         val compositeFilter = CompositeFilter.and(serializedEventFilter, listenerIdFilter, completionDateFilter)
 
         val publications = operations.query(
-            Query.newEntityQueryBuilder()
-                .setKind("EventPublication")
-                .setFilter(compositeFilter)
-                .addOrderBy(OrderBy.asc("publicationDate"))
-                .build(),
-            DatastoreEventPublication::class.java
+            Query.newEntityQueryBuilder().setKind("EventPublication").setFilter(compositeFilter)
+                .addOrderBy(OrderBy.asc("publicationDate")).build(), DatastoreEventPublication::class.java
         )
 
         // Get the first publication or return empty if none found
@@ -152,12 +135,8 @@ open class DatastoreEventPublicationRepository(
 
         // Execute query with sorting by publicationDate
         val publications = operations.query(
-            Query.newEntityQueryBuilder()
-                .setKind("EventPublication")
-                .setFilter(completionDateFilter)
-                .addOrderBy(OrderBy.asc("publicationDate"))
-                .build(),
-            DatastoreEventPublication::class.java
+            Query.newEntityQueryBuilder().setKind("EventPublication").setFilter(completionDateFilter)
+                .addOrderBy(OrderBy.asc("publicationDate")).build(), DatastoreEventPublication::class.java
         )
 
         // Convert publications to TargetEventPublication
@@ -177,12 +156,8 @@ open class DatastoreEventPublicationRepository(
 
         // Execute query with sorting by publicationDate
         val publications = operations.query(
-            Query.newEntityQueryBuilder()
-                .setKind("EventPublication")
-                .setFilter(completionDateFilter)
-                .addOrderBy(OrderBy.asc("publicationDate"))
-                .build(),
-            DatastoreEventPublication::class.java
+            Query.newEntityQueryBuilder().setKind("EventPublication").setFilter(completionDateFilter)
+                .addOrderBy(OrderBy.asc("publicationDate")).build(), DatastoreEventPublication::class.java
         )
 
         // Convert publications to TargetEventPublication
@@ -269,17 +244,14 @@ open class DatastoreEventPublicationRepository(
     }
 
     private fun createAdapter(
-        publication: DatastoreEventPublication,
-        eventType: Class<*>
+        publication: DatastoreEventPublication, eventType: Class<*>
     ): DatastoreEventPublicationAdapter {
         val eventSupplier = Supplier {
             serializer.deserialize(publication.serializedEvent, eventType)
         }
 
         return DatastoreEventPublicationAdapter(
-            publication,
-            eventType,
-            eventSupplier::get
+            publication, eventType, eventSupplier::get
         )
     }
 }

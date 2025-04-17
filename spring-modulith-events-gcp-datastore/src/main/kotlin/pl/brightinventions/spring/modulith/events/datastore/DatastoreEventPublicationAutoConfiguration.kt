@@ -33,10 +33,9 @@ class DatastoreEventPublicationAutoConfiguration : EventPublicationConfiguration
         operations: DatastoreOperations,
         serializer: EventSerializer,
         environment: Environment,
-        platformTransactionManager: PlatformTransactionManager,
     ): DatastoreEventPublicationRepository {
         return DatastoreEventPublicationRepository(
-            operations, serializer, CompletionMode.from(environment), platformTransactionManager
+            operations, serializer, CompletionMode.from(environment)
         )
     }
 }
