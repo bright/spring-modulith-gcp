@@ -10,7 +10,7 @@ plugins {
 
 allprojects {
     group = "pl.brightinventions.spring.modulith"
-    version = "0.1.0"
+    version = "0.1.6"
 
     repositories {
         mavenCentral()
@@ -22,8 +22,6 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "org.jreleaser")
-    apply(plugin = "signing")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -41,6 +39,7 @@ subprojects {
     }
 
     if (project.name != "examples") {
+        apply(plugin = "org.jreleaser")
 
         java {
             withJavadocJar()
@@ -53,7 +52,7 @@ subprojects {
                     from(components["java"])
                     pom {
                         name.set(project.name)
-                        description.set("Spring Modulith GCP integration for ${project.name}")
+                        description.set(project.description ?: "Spring Modulith GCP integration for ${project.name}")
                         url.set("https://github.com/bright/spring-modulith-gcp")
                         licenses {
                             license {
@@ -84,20 +83,6 @@ subprojects {
             }
         }
 
-        configure<SigningExtension> {
-            sign(extensions.getByType<PublishingExtension>().publications)
-            val secretKey = providers.environmentVariable("JRELEASER_GPG_SECRET_KEY")
-                .map { it.trim() }
-                .orNull
-            val password = providers.environmentVariable("JRELEASER_GPG_PASSPHRASE")
-                .map { it.trim() }
-                .orNull
-            useInMemoryPgpKeys(
-                secretKey,
-                password,
-            )
-        }
-
         configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
             gitRootSearch = true
             project {
@@ -114,16 +99,12 @@ subprojects {
 
             release {
                 github {
-                    repoOwner.set("bright")
-                    name.set("spring-modulith-gcp")
                 }
             }
-
 
             checksum {
                 individual = true  // Generate checksums for each file
             }
-
 
             signing {
                 active = Active.ALWAYS
