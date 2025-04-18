@@ -40,9 +40,12 @@ jobs:
       - name: Update version
         run: |
           sed -i "s/version = \".*\"/version = \"${{ github.event.inputs.version }}\"/g" build.gradle.kts
+          sed -i "s/:[0-9]\+\.[0-9]\+\.[0-9]\+/:${{ github.event.inputs.version }}/g" README.md
+          sed -i "s/<version>[0-9]\+\.[0-9]\+\.[0-9]\+<\/version>/<version>${{ github.event.inputs.version }}<\/version>/g" README.md
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git commit -am "Release version ${{ github.event.inputs.version }}"          
+          git commit -am "Release version ${{ github.event.inputs.version }}"
+          git push origin main
 
       - name: Build and test
         run: gradle build

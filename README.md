@@ -1,8 +1,48 @@
 # Bright Spring Modulith GCP
 
+[![CI](https://github.com/bright/spring-modulith-gcp/actions/workflows/ci.yml/badge.svg)](https://github.com/bright/spring-modulith-gcp/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/pl.brightinventions.spring.modulith/spring-modulith-starter-gcp-datastore.svg)](https://central.sonatype.com/search?q=pl.brightinventions.spring.modulith)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This project aims to integrate [Spring Modulith](https://spring.io/projects/spring-modulith) with Google Cloud Platform
 services. The initial focus is on supporting GCP Datastore through a custom, work-in-progress transaction manager that
 overcomes the limitations of the official GCP Spring library.
+
+## Installation
+
+### Gradle
+
+```kotlin
+// For the starter (recommended)
+implementation("pl.brightinventions.spring.modulith:spring-modulith-starter-gcp-datastore:0.2.6")
+
+// Or individual modules
+implementation("pl.brightinventions.spring.modulith:spring-gcp-datastore:0.2.6")
+implementation("pl.brightinventions.spring.modulith:spring-modulith-events-gcp-datastore:0.2.6")
+```
+
+### Maven
+
+```xml
+<!-- For the starter (recommended) -->
+<dependency>
+    <groupId>pl.brightinventions.spring.modulith</groupId>
+    <artifactId>spring-modulith-starter-gcp-datastore</artifactId>
+    <version>0.3.0</version>
+</dependency>
+
+<!-- Or individual modules -->
+<dependency>
+    <groupId>pl.brightinventions.spring.modulith</groupId>
+    <artifactId>spring-gcp-datastore</artifactId>
+    <version>0.3.0</version>
+</dependency>
+<dependency>
+    <groupId>pl.brightinventions.spring.modulith</groupId>
+    <artifactId>spring-modulith-events-gcp-datastore</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
 
 ## Modules
 
