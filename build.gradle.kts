@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm") version libs.versions.kotlin.get() apply false
     kotlin("plugin.spring") version libs.versions.kotlin.get() apply false
     id("java-library")
-    id("org.jreleaser") version "1.17.0" apply false
+    alias(libs.plugins.jreleaser) apply false
 }
 
 allprojects {

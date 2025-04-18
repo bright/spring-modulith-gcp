@@ -14,6 +14,7 @@ dependencyResolutionManagement {
             version("springModulith", "1.3.4")
             version("testcontainers", "1.19.7")
             version("kotest", "6.0.0.M3")
+            version("jreleaser", "1.17.0")
 
             library("spring-boot-starter", "org.springframework.boot", "spring-boot-starter").versionRef("springBoot")
             library("spring-boot-starter-web", "org.springframework.boot", "spring-boot-starter-web").versionRef("springBoot")
@@ -43,6 +44,9 @@ dependencyResolutionManagement {
             // BOM imports
             library("spring-boot-bom", "org.springframework.boot", "spring-boot-dependencies").versionRef("springBoot")
             library("spring-cloud-gcp-dependencies", "com.google.cloud", "spring-cloud-gcp-dependencies").versionRef("springCloudGcp")
+
+            // Plugins
+            plugin("jreleaser", "org.jreleaser").versionRef("jreleaser")
         }
     }
 }
