@@ -117,3 +117,5 @@ $RECYCLE.BIN/
 app.yaml
 creds.json
 **/appengine-generated/
+
+tmp
