@@ -11,7 +11,7 @@ Strongly avoid using mocks. Do not differentiate between unit and integration st
 
 # Spring Modulith
 
-The build/spring-modulith contains the source of Spring Modulith.
+The tmp/spring-modulith contains the source of Spring Modulith.
 Do not modify it. Use it as a documentation source.
 
 # Spring Boot
@@ -25,7 +25,7 @@ Use Spring Boot version 3.4.4
 Rely on Gradle's BOM support. Do not use Spring Boot's dependency management plugin instead add implementation platform
 dependency using Spring Boot BOM.
 
-Whenever there's a need for dependency in build.gradle.kts use Gradle's version catalogue.
+All dependencies in build.gradle.kts should use Gradle's version catalogue.
 
 ## GCP Spring Boot
 
