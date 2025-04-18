@@ -1,16 +1,17 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jreleaser.model.Active
+import java.time.LocalDate
 
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get() apply false
     kotlin("plugin.spring") version libs.versions.kotlin.get() apply false
     id("java-library")
-    alias(libs.plugins.jreleaser) apply false
+    alias(libs.plugins.jreleaser) // Apply JReleaser at the root level
 }
 
 allprojects {
     group = "pl.brightinventions.spring.modulith"
-    version = "0.1.6"
+    version = "0.2.1"
 
     repositories {
         mavenCentral()
@@ -39,8 +40,6 @@ subprojects {
     }
 
     if (project.name != "examples") {
-        apply(plugin = "org.jreleaser")
-
         java {
             withJavadocJar()
             withSourcesJar()
@@ -82,53 +81,51 @@ subprojects {
                 }
             }
         }
-        val gradleProject = project
-        configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
-            gitRootSearch = true
-            project {
-                description = gradleProject.description ?: gradleProject.name
-                authors = listOf("Bright Inventions")
-                license = "MIT"
-                links {
-                    homepage = "https://github.com/bright/spring-modulith-gcp"
-                    bugTracker = "https://github.com/bright/spring-modulith-gcp/issues"
-                    contact = "https://brightinventions.pl"
-                }
-                inceptionYear = "2025"
-                vendor = "Bright Inventions"
-                copyright = ""
-            }
+    }
+}
 
-            release {
-                github {
-                    commitAuthor {
-                        name = "Bright Inventions"
-                        email = "info@brightinventions.pl"
+configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
+    gitRootSearch = true
+    project {
+        description = "Spring Modulith GCP integration libraries"
+        authors = listOf("Bright Inventions")
+        license = "MIT"
+        links {
+            homepage = "https://github.com/bright/spring-modulith-gcp"
+            bugTracker = "https://github.com/bright/spring-modulith-gcp/issues"
+            contact = "https://brightinventions.pl"
+        }
+        inceptionYear = "2025"
+        vendor = "Bright Inventions"
+        copyright = "Copyright (c) ${LocalDate.now().year} Bright Inventions Sp. z o.o."
+    }
+
+    release {
+        github {
+            commitAuthor {
+                name = "Bright Inventions"
+                email = "info@brightinventions.pl"
+            }
+        }
+    }
+
+    signing {
+        active = Active.ALWAYS
+        armored = true
+    }
+
+    deploy {
+        maven {
+            mavenCentral {
+                register("sonatype") { // https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_portal_publisher_api
+                    active = Active.ALWAYS
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    subprojects.filter { it.name != "examples" }.forEach { project ->
+                        stagingRepository(project.layout.buildDirectory.dir("staging-deploy").get().asFile.path)
                     }
+
                 }
             }
-
-            checksum {
-                individual = true  // Generate checksums for each file
-            }
-
-            signing {
-                active = Active.ALWAYS
-                armored = true
-            }
-
-            deploy {
-                maven {
-                    mavenCentral {
-                        register("sonatype") { // https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_portal_publisher_api
-                            active = Active.ALWAYS
-                            url = "https://central.sonatype.com/api/v1/publisher"
-                            stagingRepository(layout.buildDirectory.dir("staging-deploy").get().asFile.path)
-                        }
-                    }
-                }
-            }
-
         }
     }
 }
