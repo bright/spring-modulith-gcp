@@ -52,12 +52,12 @@ subprojects {
                     from(components["java"])
                     pom {
                         name.set(project.name)
-                        description.set(project.description ?: "Spring Modulith GCP integration for ${project.name}")
+                        description.set(project.description ?: project.name)
                         url.set("https://github.com/bright/spring-modulith-gcp")
                         licenses {
                             license {
-                                name.set("The Apache License, Version 2.0")
-                                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                                name.set("MIT")
+                                url.set("https://github.com/bright/spring-modulith-gcp/blob/main/LICENSE")
                             }
                         }
                         developers {
@@ -82,23 +82,29 @@ subprojects {
                 }
             }
         }
-
+        val gradleProject = project
         configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
             gitRootSearch = true
             project {
-                description.set("Spring Modulith GCP integration")
-                authors.set(listOf("Bright Inventions"))
-                license.set("Apache-2.0")
+                description = gradleProject.description ?: gradleProject.name
+                authors = listOf("Bright Inventions")
+                license = "MIT"
                 links {
-                    homepage.set("https://github.com/bright/spring-modulith-gcp")
+                    homepage = "https://github.com/bright/spring-modulith-gcp"
+                    bugTracker = "https://github.com/bright/spring-modulith-gcp/issues"
+                    contact = "https://brightinventions.pl"
                 }
-                inceptionYear.set("2024")
-                vendor.set("Bright Inventions")
+                inceptionYear = "2025"
+                vendor = "Bright Inventions"
+                copyright = ""
             }
-
 
             release {
                 github {
+                    commitAuthor {
+                        name = "Bright Inventions"
+                        email = "info@brightinventions.pl"
+                    }
                 }
             }
 
