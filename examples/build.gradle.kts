@@ -9,7 +9,6 @@ dependencies {
     implementation(libs.spring.boot.starter)
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.actuator)
-    implementation(project(":spring-gcp-datastore"))
     implementation(project(":spring-modulith-starter-gcp-datastore"))
     implementation(libs.spring.cloud.gcp.starter.data.datastore)
     implementation(platform(libs.spring.cloud.gcp.dependencies))

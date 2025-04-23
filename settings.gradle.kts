@@ -26,6 +26,8 @@ dependencyResolutionManagement {
             library("spring-modulith-events-jackson", "org.springframework.modulith", "spring-modulith-events-jackson").versionRef("springModulith")
             library("spring-modulith-starter-core", "org.springframework.modulith", "spring-modulith-starter-core").versionRef("springModulith")
 
+            library("jackson-module-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").withoutVersion()
+
             library("spring-cloud-gcp-starter-data-datastore", "com.google.cloud", "spring-cloud-gcp-starter-data-datastore").versionRef("springCloudGcp")
             library("spring-cloud-gcp-starter-data-firestore", "com.google.cloud", "spring-cloud-gcp-starter-data-firestore").versionRef("springCloudGcp")
             library("google-cloud-firestore-admin", "com.google.cloud", "google-cloud-firestore-admin").version("3.30.11")

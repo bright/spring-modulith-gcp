@@ -19,11 +19,6 @@ import java.net.URI
 import java.util.function.Supplier
 
 @SpringBootTest(args = ["--debug"])
-@ActiveProfiles("tests")
-@ContextConfiguration(initializers = [DatastoreEmulatorContextInitializer::class])
-annotation class IntegrationTest
-
-@SpringBootTest(args = ["--debug"])
 @ActiveProfiles(profiles = ["tests", "tests-e2e"])
 annotation class E2ETest
 

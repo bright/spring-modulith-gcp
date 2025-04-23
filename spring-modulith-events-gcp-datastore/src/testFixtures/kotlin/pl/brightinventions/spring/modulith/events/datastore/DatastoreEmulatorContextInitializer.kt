@@ -15,7 +15,7 @@ import org.testcontainers.utility.DockerImageName
  *
  * @author Piotr Mionskowski
  */
-
+// TODO: consider replacing with ConnectionDetails
 class DatastoreEmulatorContextInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
         val datastoreEmulator =
@@ -25,9 +25,12 @@ class DatastoreEmulatorContextInitializer : ApplicationContextInitializer<Config
 
         // shutting down the container on context close
         applicationContext.beanFactory.registerSingleton(
-            "datastore",
+            "datastoreContainer",
             datastoreEmulator
         )
+
+//        TODO: sometimes the container is killed before eventPublicationRegistry is destroyed which causes a timout
+//        applicationContext.beanFactory.registerDependentBean("datastoreContainer","eventPublicationRegistry", )
 
         datastoreEmulator.start()
 

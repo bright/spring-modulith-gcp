@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version libs.versions.kotlin.get() apply false
     kotlin("plugin.spring") version libs.versions.kotlin.get() apply false
     id("java-library")
-    alias(libs.plugins.jreleaser) // Apply JReleaser at the root level
+    alias(libs.plugins.jreleaser)
 }
 
 allprojects {

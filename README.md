@@ -51,6 +51,7 @@ implementation("pl.brightinventions.spring.modulith:spring-modulith-events-gcp-d
 
 - **spring-modulith-events-gcp-datastore**  
   Integration of Spring Modulith Events with GCP Datastore for event storage.
+  See [module documentation for details](spring-modulith-events-gcp-datastore/README.md).
 
 - **spring-modulith-starter-gcp-datastore**  
   Spring Boot starter for easy integration of Spring Modulith with GCP Datastore.

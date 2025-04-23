@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    gcp:
+      project-id: test-project-id
+      secretmanager:
+        enabled: false

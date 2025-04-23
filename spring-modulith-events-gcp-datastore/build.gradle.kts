@@ -1,4 +1,10 @@
+plugins {
+    `java-test-fixtures`
+}
+
 dependencies {
+    implementation(platform(libs.spring.cloud.gcp.dependencies))
+
     api(libs.spring.modulith.events.api)
     implementation(libs.spring.modulith.events.core)
 
@@ -12,9 +18,11 @@ dependencies {
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.modulith.events.jackson)
 
-    testImplementation(libs.testcontainers.core)
+    testFixturesImplementation(libs.spring.boot.starter.test)
+    testFixturesImplementation(libs.testcontainers.core)
+    testFixturesImplementation(libs.testcontainers.gcloud)
+
     testImplementation(libs.testcontainers.junit.jupiter)
-    testImplementation(libs.testcontainers.gcloud)
 
     testImplementation(libs.kotest.assertions.core)
 }
