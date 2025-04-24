@@ -123,7 +123,7 @@ configure<org.jreleaser.gradle.plugin.JReleaserExtension> {
                     subprojects.filter { it.name != "examples" }.forEach { project ->
                         stagingRepository(project.layout.buildDirectory.dir("staging-deploy").get().asFile.path)
                     }
-
+                    maxRetries = 120
                 }
             }
         }
