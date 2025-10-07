@@ -11,7 +11,7 @@ plugins {
 
 allprojects {
     group = "pl.brightinventions.spring.modulith"
-    version = "1.1.0"
+    version = "1.1.1-SNAPSHOT"
 
     repositories {
         mavenCentral()
