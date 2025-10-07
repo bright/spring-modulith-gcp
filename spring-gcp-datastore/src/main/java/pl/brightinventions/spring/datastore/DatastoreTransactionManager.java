@@ -96,7 +96,20 @@ public class DatastoreTransactionManager extends com.google.cloud.spring.data.da
     TransactionSynchronizationManager.unbindResource(tx.getDatastore());
   }
 
-  /**
+  @Override
+  protected Object doSuspend(Object transaction) throws TransactionException {
+      Tx tx = (Tx) transaction;
+      TransactionSynchronizationManager.unbindResource(tx.getDatastore());
+      return tx;
+  }
+
+  @Override
+  protected void doResume(Object transaction, Object suspendedResources) throws TransactionException {
+      Tx tx = (Tx) suspendedResources;
+      TransactionSynchronizationManager.bindResource(tx.getDatastore(), tx);
+  }
+
+    /**
    * A class to contain the transaction context.
    */
 //  public static class Tx implements SmartTransactionObject {
