@@ -26,7 +26,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build and test
-        run: gradle build
+        run: ./gradlew build
 
       - name: Upload test results
         if: always()
