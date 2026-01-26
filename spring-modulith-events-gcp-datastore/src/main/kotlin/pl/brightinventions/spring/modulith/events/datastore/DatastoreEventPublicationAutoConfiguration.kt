@@ -13,7 +13,6 @@ import org.springframework.modulith.events.config.EventPublicationAutoConfigurat
 import org.springframework.modulith.events.config.EventPublicationConfigurationExtension
 import org.springframework.modulith.events.core.EventSerializer
 import org.springframework.modulith.events.support.CompletionMode
-import org.springframework.transaction.PlatformTransactionManager
 
 /**
  * Auto-configuration for GCP Datastore based event publication.

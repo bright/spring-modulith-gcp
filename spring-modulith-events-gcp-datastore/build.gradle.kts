@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(platform(libs.spring.boot.bom))
     implementation(platform(libs.spring.cloud.gcp.dependencies))
 
     api(libs.spring.modulith.events.api)
@@ -10,6 +11,8 @@ dependencies {
 
     implementation(libs.spring.boot.starter)
     implementation(libs.spring.cloud.gcp.starter.data.datastore)
+    implementation("org.springframework.retry:spring-retry:2.0.11")
+    implementation("org.springframework:spring-aspects")
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
 

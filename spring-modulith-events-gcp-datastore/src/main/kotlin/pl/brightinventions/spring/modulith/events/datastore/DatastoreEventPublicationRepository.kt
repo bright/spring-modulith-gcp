@@ -37,6 +37,7 @@ open class DatastoreEventPublicationRepository(
         this.classLoader = classLoader
     }
 
+    @DatastoreRetryable
     override fun create(publication: TargetEventPublication): TargetEventPublication {
         val event = publication.getEvent()
         val serializedEvent = serializer.serialize(event)
@@ -53,6 +54,7 @@ open class DatastoreEventPublicationRepository(
         return publication
     }
 
+    @DatastoreRetryable
     override fun markCompleted(event: Any, identifier: PublicationTargetIdentifier, completionDate: Instant) {
         val serializedEvent = serializer.serialize(event).toString()
 
@@ -73,6 +75,7 @@ open class DatastoreEventPublicationRepository(
         }
     }
 
+    @DatastoreRetryable
     override fun markCompleted(identifier: UUID, completionDate: Instant) {
         val publication = operations.findById(identifier.toString(), DatastoreEventPublication::class.java)
 
@@ -190,6 +193,7 @@ open class DatastoreEventPublicationRepository(
         }
     }
 
+    @DatastoreRetryable
     @Transactional
     override fun deletePublications(identifiers: List<UUID>) {
         identifiers.forEach { id ->
@@ -197,6 +201,7 @@ open class DatastoreEventPublicationRepository(
         }
     }
 
+    @DatastoreRetryable
     @Transactional
     override fun deleteCompletedPublications() {
         // First, find all completed publications using the findCompletedPublications method
@@ -212,6 +217,7 @@ open class DatastoreEventPublicationRepository(
         }
     }
 
+    @DatastoreRetryable
     @Transactional
     override fun deleteCompletedPublicationsBefore(instant: Instant) {
         // First, find all completed publications using the findCompletedPublications method
