@@ -4,11 +4,9 @@ import com.google.cloud.datastore.DatastoreException
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.stereotype.Service
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -17,7 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger
  * @author Adam Waniak
  */
 @SpringBootTest(
-    classes = [DatastoreRetryableTests.TestConfiguration::class],
+    classes = [
+        ModulithEventsDatastoreTestApplication::class,
+        DatastoreRetryableTests.TestConfiguration::class
+    ],
     properties = [
         "pl.brightinventions.spring.modulith.events.datastore.retry.max-attempts=3",
         "pl.brightinventions.spring.modulith.events.datastore.retry.initial-interval=10",
@@ -37,7 +38,7 @@ class DatastoreRetryableTests {
         retryableService.failCount = 2
 
         // when
-        val result = retryableService.operationThatFailsTwiceThenSucceeds()
+        val result = retryableService.operationWithRetryableFailure()
 
         // then
         result shouldBe "success"
@@ -51,7 +52,7 @@ class DatastoreRetryableTests {
         retryableService.failCount = 0
 
         // when
-        val result = retryableService.operationThatFailsTwiceThenSucceeds()
+        val result = retryableService.operationWithRetryableFailure()
 
         // then
         result shouldBe "success"
@@ -66,7 +67,7 @@ class DatastoreRetryableTests {
 
         // when & then
         try {
-            retryableService.operationThatFailsTwiceThenSucceeds()
+            retryableService.operationWithRetryableFailure()
             throw AssertionError("Expected DatastoreException to be thrown")
         } catch (e: DatastoreException) {
             retryableService.attemptCount.get() shouldBe 3
@@ -74,7 +75,6 @@ class DatastoreRetryableTests {
     }
 
     @Configuration
-    @EnableAutoConfiguration
     class TestConfiguration {
 
         @Bean
@@ -84,19 +84,18 @@ class DatastoreRetryableTests {
     }
 }
 
-@Service
 open class RetryableTestService {
 
-    val attemptCount = AtomicInteger(0)
-    var failCount = 0
+    open val attemptCount: AtomicInteger = AtomicInteger(0)
+    open var failCount: Int = 0
 
-    fun reset() {
+    open fun reset() {
         attemptCount.set(0)
         failCount = 0
     }
 
     @DatastoreRetryable
-    open fun operationThatFailsTwiceThenSucceeds(): String {
+    open fun operationWithRetryableFailure(): String {
         val currentAttempt = attemptCount.incrementAndGet()
         if (currentAttempt <= failCount) {
             throw DatastoreException(10, "too much contention on these datastore entities", "ABORTED")
