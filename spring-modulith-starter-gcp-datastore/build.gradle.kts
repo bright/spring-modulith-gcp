@@ -19,6 +19,7 @@ dependencies {
     testImplementation(libs.spring.cloud.gcp.starter.data.datastore)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.jackson.module.kotlin)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.jar {

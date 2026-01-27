@@ -1,1 +1,2 @@
 pl.brightinventions.spring.modulith.events.datastore.DatastoreEventPublicationAutoConfiguration
+pl.brightinventions.spring.modulith.events.datastore.DatastoreRetryConfiguration

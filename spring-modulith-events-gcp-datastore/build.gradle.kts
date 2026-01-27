@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(platform(libs.spring.boot.bom))
     implementation(platform(libs.spring.cloud.gcp.dependencies))
 
     api(libs.spring.modulith.events.api)
@@ -10,6 +11,8 @@ dependencies {
 
     implementation(libs.spring.boot.starter)
     implementation(libs.spring.cloud.gcp.starter.data.datastore)
+    implementation(libs.spring.retry)
+    implementation(libs.spring.aspects)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
 
@@ -25,6 +28,7 @@ dependencies {
     testImplementation(libs.testcontainers.junit.jupiter)
 
     testImplementation(libs.kotest.assertions.core)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.jar {

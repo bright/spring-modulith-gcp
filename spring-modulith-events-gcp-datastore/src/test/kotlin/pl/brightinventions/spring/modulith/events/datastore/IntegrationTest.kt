@@ -4,7 +4,6 @@ import com.google.api.gax.core.CredentialsProvider
 import com.google.api.gax.core.FixedCredentialsProvider
 import com.google.auth.Credentials
 import com.google.cloud.datastore.Datastore
-import com.google.cloud.datastore.admin.v1.DatastoreAdminClient
 import com.google.cloud.datastore.admin.v1.DatastoreAdminSettings
 import com.google.cloud.firestore.v1.FirestoreAdminClient
 import com.google.cloud.firestore.v1.FirestoreAdminSettings
@@ -14,7 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import java.net.URI
 import java.util.function.Supplier
 
