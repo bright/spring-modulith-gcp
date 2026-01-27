@@ -1,5 +1,4 @@
 dependencies {
-    implementation(platform(libs.spring.boot.bom))
     implementation(platform(libs.spring.cloud.gcp.dependencies))
 
     api(libs.spring.modulith.starter.core)
