@@ -22,6 +22,7 @@ import org.springframework.transaction.TransactionSystemException
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @Retryable(
+    listeners = ["datastoreRetryListener"],
     retryFor = [DatastoreException::class, TransactionSystemException::class],
     maxAttemptsExpression = "\${pl.brightinventions.spring.modulith.events.datastore.retry.max-attempts:5}",
     backoff = Backoff(
