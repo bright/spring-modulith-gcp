@@ -28,6 +28,7 @@ dependencies {
     testImplementation(libs.testcontainers.junit.jupiter)
 
     testImplementation(libs.kotest.assertions.core)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.jar {

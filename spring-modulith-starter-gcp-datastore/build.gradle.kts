@@ -1,4 +1,5 @@
 dependencies {
+    implementation(platform(libs.spring.boot.bom))
     implementation(platform(libs.spring.cloud.gcp.dependencies))
 
     api(libs.spring.modulith.starter.core)
@@ -19,6 +20,7 @@ dependencies {
     testImplementation(libs.spring.cloud.gcp.starter.data.datastore)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.jackson.module.kotlin)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.jar {

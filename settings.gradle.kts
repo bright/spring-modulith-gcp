@@ -8,10 +8,10 @@ include("examples")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("springBoot", "3.4.4")
+            version("springBoot", "3.5.8")
             version("kotlin", "2.1.20")
-            version("springCloudGcp", "6.1.1")
-            version("springModulith", "1.3.4")
+            version("springCloudGcp", "7.4.3")
+            version("springModulith", "1.4.6")
             version("testcontainers", "1.19.7")
             version("kotest", "6.0.0.M3")
             version("jreleaser", "1.17.0")
@@ -44,6 +44,9 @@ dependencyResolutionManagement {
 
             // Kotest
             library("kotest-assertions-core", "io.kotest", "kotest-assertions-core").versionRef("kotest")
+
+            // JUnit Platform
+            library("junit-platform-launcher", "org.junit.platform", "junit-platform-launcher").withoutVersion()
 
             // BOM imports
             library("spring-boot-bom", "org.springframework.boot", "spring-boot-dependencies").versionRef("springBoot")
