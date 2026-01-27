@@ -4,7 +4,10 @@ import com.google.cloud.datastore.DatastoreException
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.concurrent.atomic.AtomicInteger
@@ -14,11 +17,14 @@ import java.util.concurrent.atomic.AtomicInteger
  *
  * @author Adam Waniak
  */
-@SpringBootTest(
+@ContextConfiguration(
     classes = [
-        ModulithEventsDatastoreTestApplication::class,
+        DatastoreRetryConfiguration::class,
         DatastoreRetryableTests.TestConfiguration::class
-    ],
+    ]
+)
+@ExtendWith(SpringExtension::class)
+@TestPropertySource(
     properties = [
         "pl.brightinventions.spring.modulith.events.datastore.retry.max-attempts=3",
         "pl.brightinventions.spring.modulith.events.datastore.retry.initial-interval=10",
