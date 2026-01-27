@@ -11,8 +11,8 @@ dependencies {
 
     implementation(libs.spring.boot.starter)
     implementation(libs.spring.cloud.gcp.starter.data.datastore)
-    implementation("org.springframework.retry:spring-retry:2.0.11")
-    implementation("org.springframework:spring-aspects")
+    implementation(libs.spring.retry)
+    implementation(libs.spring.aspects)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
 

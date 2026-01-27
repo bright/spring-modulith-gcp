@@ -20,6 +20,8 @@ dependencyResolutionManagement {
             library("spring-boot-starter-web", "org.springframework.boot", "spring-boot-starter-web").versionRef("springBoot")
             library("spring-boot-starter-actuator", "org.springframework.boot", "spring-boot-starter-actuator").versionRef("springBoot")
             library("spring-boot-starter-test", "org.springframework.boot", "spring-boot-starter-test").versionRef("springBoot")
+            library("spring-retry", "org.springframework.retry", "spring-retry").withoutVersion()
+            library("spring-aspects", "org.springframework", "spring-aspects").withoutVersion()
 
             library("spring-modulith-events-api", "org.springframework.modulith", "spring-modulith-events-api").versionRef("springModulith")
             library("spring-modulith-events-core", "org.springframework.modulith", "spring-modulith-events-core").versionRef("springModulith")
