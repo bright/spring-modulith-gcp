@@ -14,11 +14,11 @@ overcomes the limitations of the official GCP Spring library.
 
 ```kotlin
 // For the starter (recommended)
-implementation("pl.brightinventions.spring.modulith:spring-modulith-starter-gcp-datastore:1.1.0")
+implementation("pl.brightinventions.spring.modulith:spring-modulith-starter-gcp-datastore:1.2.0")
 
 // Or individual modules
-implementation("pl.brightinventions.spring.modulith:spring-gcp-datastore:1.1.0")
-implementation("pl.brightinventions.spring.modulith:spring-modulith-events-gcp-datastore:1.1.0")
+implementation("pl.brightinventions.spring.modulith:spring-gcp-datastore:1.2.0")
+implementation("pl.brightinventions.spring.modulith:spring-modulith-events-gcp-datastore:1.2.0")
 ```
 
 ### Maven
@@ -28,19 +28,19 @@ implementation("pl.brightinventions.spring.modulith:spring-modulith-events-gcp-d
 <dependency>
     <groupId>pl.brightinventions.spring.modulith</groupId>
     <artifactId>spring-modulith-starter-gcp-datastore</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 
 <!-- Or individual modules -->
 <dependency>
     <groupId>pl.brightinventions.spring.modulith</groupId>
     <artifactId>spring-gcp-datastore</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 <dependency>
     <groupId>pl.brightinventions.spring.modulith</groupId>
     <artifactId>spring-modulith-events-gcp-datastore</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
